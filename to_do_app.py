@@ -1,3 +1,4 @@
+# Get username from the user as the app is being launched and greet the player 
 username = input("Hi there! Welcome to the world's best To-Do list app! Please type in your name: ")
 
 # Generate a new filename for the user
@@ -5,21 +6,26 @@ filename = f"{username}_to_do_app.txt"
 
 print("Hi there " + username + "!\n")
 
+# Check if the user is new or a returning user
 isNewUser = input("Are you new here? Please type Y for yes and N for no. ")
 
+# Function that adds new tasks to the list 
 def addNewTask(f):
     print("Usage: keep adding tasks until you're all done. If you wish to stop, simply type in /q")
+    
+    # Assign an empty array to keep track of the tasks 
+    tasks = []
     isNewTask = input("What are you up to: ")
     
+    i = 1   
     while (isNewTask != "/q"):
-        f.write(isNewTask)
-        f.write("\n")
-        #add formatting for list 1, 2, 3, etc
-        # i = 1        
+        tasks.append(str(i) + "." + isNewTask)
         isNewTask = input("What else are you up to: ")
-        # f.write(i + isNewTask)
-        # i+1
-    
+        i += 1  
+
+    # Write tasks into a file as a single string separated by the new line
+    f.writelines('\n'.join(tasks))
+
     f.close()
     
     return tasks
@@ -27,30 +33,42 @@ def addNewTask(f):
 
 
 def displayTasks():
-    print("Here are all the things you put in: \n")
-    f = open("to_do_app.txt", "rt")
-    print(f.read())
-    
+    print("Here is the list of your awesome endeavours:")
+    f = open(filename, "rt")
+    print(f.read())  
+        
 
 
-def deleteLines(lineToDelete):
-    line = lineToDelete;
+def deleteLines(filename, lineToDelete):
     
-    #loop and prompt for more lines to be deleted?
-    #this does not work
-    
-    f = open("to_do_app.txt", "r")
+    # Open the file, read the lines and close it (load the contents into memory)
+    f = open(filename, "r")
     lines = f.readlines()
     f.close()
     
-    f = open("to_do_app.txt", "w")
-    for number, line in enumerate(lines):
+    # lineToDelete == user enters the line number (without dot)
+
+    # Search the doc for that line (number)
+        # Need to search for the specific entry -> the line number + '."
+        # Add the '.' after the number entered by the user 
+        # Then search lines (file contents loaded above)
+    
+    # Find the correct line (find the number with '.') and get the WHOLE line (up to the next int)
+    # Delete this line (i.e. rewite the entire doc without this line)
+    # Save and close
+    # Prompt the user to check if they wish to delete more lines
+        # Yes - Start again (loop?)
+        # No - Exit    
+    
+    f = open(filename, "a")
+    for number, line in enumerate(lines, start=1):
         if number != lineToDelete:
             f.write(line)
             
     f.close()
     
-    print("Here is you updated list of tasks:\n")
+    #print("Here is your updated list of tasks:\n")
+    # Display the updated list of tasks
     displayTasks()
 
 
@@ -61,16 +79,15 @@ def modifyToDoList():
     
     fileEdit = input("Please type A for add, E for edit, D for deleting and C to cancel")
     
-    if fileEdit == "A":
+    if fileEdit.lower() == "a":
         f = open(filename, "at")
         addNewTask()
-    elif fileEdit == "E":
+    elif fileEdit.lower() == "e":
         #put code here
         print("test")
-    elif fileEdit == "D":
+    elif fileEdit.lower() == "d":
         lineToDelete = input("Please specify which task (by the number) you wish to delete: ")
-        deleteLines(lineToDelete)        
-    #elif fileEdit == "E":
+        deleteLines(filename, lineToDelete)        
 
 
 
@@ -90,21 +107,17 @@ def createNewToDoList():
     
         
         
-# Ignore the case 
+# Check if the user is new or a returning user
 if isNewUser.lower() == "y":
     
     createNewToDoList()
-    
-    #create a new file for writing
-    #start adding tasks
-    #when done, save and close
 
-# if isNewUser == "N":
-#     f = open("to_do_app.txt", "rt")
-#     print("Here are all the awesome things you've been up to: ")
-#     print(f.read())
-#     print("And here are some cool things you can do: ")
-#     #load options here: edit, add, delete
+if isNewUser.lower() == "n":
+     f = open(filename, "rt")
+     print("Here are all the awesome things you've been up to: ")
+     print(f.read())
+     print("And here are some cool things you can do: ")
+     modifyToDoList()
 
 
 
