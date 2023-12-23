@@ -1,4 +1,8 @@
 username = input("Hi there! Welcome to the world's best To-Do list app! Please type in your name: ")
+
+# Generate a new filename for the user
+filename = f"{username}_to_do_app.txt"
+
 print("Hi there " + username + "!\n")
 
 isNewUser = input("Are you new here? Please type Y for yes and N for no. ")
@@ -17,6 +21,8 @@ def addNewTask(f):
         # i+1
     
     f.close()
+    
+    return tasks
 
 
 
@@ -56,7 +62,7 @@ def modifyToDoList():
     fileEdit = input("Please type A for add, E for edit, D for deleting and C to cancel")
     
     if fileEdit == "A":
-        f = open("to_do_app.txt", "at")
+        f = open(filename, "at")
         addNewTask()
     elif fileEdit == "E":
         #put code here
@@ -69,20 +75,26 @@ def modifyToDoList():
 
 
 def createNewToDoList():
-    f = open("to_do_app.txt", "wt")
+    f = open(filename, "wt")
+    
     print("That's a great start! Let's jump right into organizing your tasks!")
-    addNewTask(f)
-        
-    displayTasks()
+    curr_task_list = addNewTask(f)
+    curr_task_list_len = len(curr_task_list)
     
-    modifyToDoList()
+    # Check that there are tasks in the list
+    if curr_task_list_len != 0: 
+        displayTasks()
+    
+        modifyToDoList()
     
     
         
         
-
-if isNewUser == "Y":
+# Ignore the case 
+if isNewUser.lower() == "y":
+    
     createNewToDoList()
+    
     #create a new file for writing
     #start adding tasks
     #when done, save and close
